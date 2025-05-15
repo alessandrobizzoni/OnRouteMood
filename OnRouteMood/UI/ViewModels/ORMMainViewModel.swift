@@ -8,6 +8,8 @@
 import Foundation
 import Combine
 
+import CoreLocation
+
 class ORMMainViewModel: ObservableObject {
     
     private var ormInteractor: ORMInteractor
@@ -32,6 +34,7 @@ class ORMMainViewModel: ObservableObject {
                     
                 case .failure(let error):
                     self?.beError = true
+                    print("[DEBUG] " + error.localizedDescription)
                 }
             } receiveValue: { [weak self] newValue in
                 self?.allTrips = newValue
@@ -40,5 +43,4 @@ class ORMMainViewModel: ObservableObject {
             .store(in: &cancellable)
 
     }
-    
 }

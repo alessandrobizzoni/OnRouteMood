@@ -8,6 +8,6 @@
 import Foundation
 
 struct DomainCoordinate: Decodable {
-    let _latitude: Double
-    let _longitude: Double
+    let lat: Double?
+    let long: Double?
 }

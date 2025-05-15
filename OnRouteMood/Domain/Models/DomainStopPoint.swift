@@ -8,6 +8,6 @@
 import Foundation
 
 struct DomainStopPoint: Decodable {
-    let id: Int
-    let point: DomainCoordinate
+    let id: Int?
+    let point: DomainCoordinate?
 }

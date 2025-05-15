@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A6534F972DD6728400D3D0C2 /* Polyline in Frameworks */ = {isa = PBXBuildFile; productRef = A6534F962DD6728400D3D0C2 /* Polyline */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		A62E3F782DD4EA160097DB6F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A6534F972DD6728400D3D0C2 /* Polyline in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +83,7 @@
 				A62E3F692DD4EA140097DB6F /* OnRouteMood */,
 				A62E3F7A2DD4EA160097DB6F /* OnRouteMoodTests */,
 				A62E3F842DD4EA160097DB6F /* OnRouteMoodUITests */,
+				A6534F952DD6728400D3D0C2 /* Frameworks */,
 				A62E3F682DD4EA140097DB6F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -90,6 +96,13 @@
 				A62E3F812DD4EA160097DB6F /* OnRouteMoodUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A6534F952DD6728400D3D0C2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -112,6 +125,7 @@
 			);
 			name = OnRouteMood;
 			packageProductDependencies = (
+				A6534F962DD6728400D3D0C2 /* Polyline */,
 			);
 			productName = OnRouteMood;
 			productReference = A62E3F672DD4EA140097DB6F /* OnRouteMood.app */;
@@ -195,6 +209,9 @@
 			);
 			mainGroup = A62E3F5E2DD4EA140097DB6F;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				A6534F942DD6717600D3D0C2 /* XCRemoteSwiftPackageReference "polyline" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A62E3F682DD4EA140097DB6F /* Products */;
 			projectDirPath = "";
@@ -554,6 +571,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A6534F942DD6717600D3D0C2 /* XCRemoteSwiftPackageReference "polyline" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/raphaelmor/polyline";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A6534F962DD6728400D3D0C2 /* Polyline */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A6534F942DD6717600D3D0C2 /* XCRemoteSwiftPackageReference "polyline" */;
+			productName = Polyline;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A62E3F5F2DD4EA140097DB6F /* Project object */;
 }

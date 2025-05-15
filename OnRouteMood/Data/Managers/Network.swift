@@ -15,15 +15,28 @@ class Network: NetworkProtocol {
     private let tripsURL = baseURL + "trips.json"
     
     func getTrips() -> AnyPublisher<[DataTrips], Error> {
-        let nextUrl: String = tripsURL
-        
-        guard let url = URL(string: nextUrl) else {
+        guard let url = URL(string: tripsURL) else {
             return Fail(error: ORMErrors.invalidURL).eraseToAnyPublisher()
         }
         
         return URLSession.shared.dataTaskPublisher(for: url)
-            .map(\.data)
+            .tryMap { output -> Data in
+                // Debug: mostrar el JSON como String para ver qué llega
+                if let jsonString = String(data: output.data, encoding: .utf8) {
+                    print("[DEBUG JSON]: \(jsonString)")
+                }
+                return output.data
+            }
             .decode(type: [DataTrips].self, decoder: JSONDecoder())
+            .handleEvents(receiveOutput: { trips in
+                print("[DEBUG DECODED]: \(trips)")
+            })
+            .mapError { error in
+                        // Captura y muestra el error de decodificación si hay
+                        print("[DEBUG DECODE ERROR]: \(error)")
+                        return error
+                    }
             .eraseToAnyPublisher()
     }
+
 }

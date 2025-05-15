@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DomainStop: Identifiable, Decodable {
+struct DomainStop {
     var id = UUID()
     let stopTime: String
     let paid: Bool

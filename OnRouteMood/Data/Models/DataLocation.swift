@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DataLocation: Decodable, Encodable {
-    let address: String
-    let point: DataCoordinate
+struct DataLocation: Codable {
+    let address: String?
+    let point: DataCoordinate?
 }

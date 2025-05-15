@@ -8,14 +8,14 @@
 import Foundation
 
 struct DomainTrips: Identifiable, Decodable {
-    var id: UUID { UUID() }
-    let description: String
+    let id: UUID
     let driverName: String
+    let status: TripStatus
     let route: String
-    let status: String
-    let origin: DomainLocation
-    let stops: [DomainStopPoint]
-    let destination: DomainLocation
     let startTime: String
+    let origin: DomainLocation
+    let description: String
+    let destination: DomainLocation
+    let stops: [DomainStopPoint?]
     let endTime: String
 }
