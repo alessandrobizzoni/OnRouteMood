@@ -27,14 +27,14 @@ class Network: NetworkProtocol {
             .eraseToAnyPublisher()
     }
     
-    func getStops() -> AnyPublisher<[DataStop], Error> {
-        guard let url = URL(string: tripsURL) else {
+    func getStops() -> AnyPublisher<DataStop, Error> {
+        guard let url = URL(string: stopsURL) else {
             return Fail(error: ORMErrors.invalidURL).eraseToAnyPublisher()
         }
         
         return URLSession.shared.dataTaskPublisher(for: url)
             .map(\.data)
-            .decode(type: [DataStop].self, decoder: JSONDecoder())
+            .decode(type: DataStop.self, decoder: JSONDecoder())
             .eraseToAnyPublisher()
     }
 

@@ -11,4 +11,5 @@ protocol ORMInteractorProtocol {
     
     func getTrips() -> AnyPublisher<[DomainTrips], Error>
     
+    func getStops() -> AnyPublisher<DomainStop, Error>
 }

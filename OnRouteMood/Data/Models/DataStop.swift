@@ -7,8 +7,7 @@
 
 import Foundation
 
-struct DataStop: Decodable, Equatable, Encodable, Identifiable {
-    var id = UUID()
+struct DataStop: Decodable, Equatable, Encodable {
     let price: Double
     let address: String
     let tripId: Int

@@ -23,4 +23,10 @@ struct ORMInteractor: ORMInteractorProtocol {
             .eraseToAnyPublisher()
     }
     
+    func getStops() -> AnyPublisher<DomainStop, Error> {
+        return networkManager.getStops()
+            .encode(encoder: JSONEncoder())
+            .decode(type: DomainStop.self, decoder: JSONDecoder())
+            .eraseToAnyPublisher()
+    }
 }

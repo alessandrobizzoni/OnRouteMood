@@ -11,4 +11,6 @@ import Combine
 protocol NetworkProtocol {
     
     func getTrips() -> AnyPublisher<[DataTrips], Error>
+    
+    func getStops() -> AnyPublisher<DataStop, Error>
 }
