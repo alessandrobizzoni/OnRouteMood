@@ -116,6 +116,7 @@ private extension ORMMainView {
                 }
             }
         }
+        .cornerRadius(10)
     }
     
     var sheetView: some View {
