@@ -51,7 +51,8 @@ struct ORMTripCard: View {
                 
                 Text("Status: \(trip.status.rawValue.uppercased())")
                     .font(.footnote)
-                    .foregroundColor(trip.status == .ongoing ? .black : .red)
+                    .fontWeight(.semibold)
+                    .foregroundColor(tripsStatusColor)
             }
             
         }
@@ -63,8 +64,21 @@ struct ORMTripCard: View {
                 .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
         )
     }
+}
+
+private extension ORMTripCard {
+    var tripsStatusColor: Color {
+        switch trip.status {
+        case .ongoing:
+            return .black
+        case .scheduled:
+            return .orange
+        case .cancelled, .finalized:
+            return .red
+        }
+    }
     
-    private func formattedTime(_ date: String) -> String {
+    func formattedTime(_ date: String) -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"

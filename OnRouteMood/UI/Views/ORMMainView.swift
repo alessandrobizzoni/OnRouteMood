@@ -35,10 +35,12 @@ struct ORMMainView: View {
             .padding(.horizontal)
             
             HStack {
-                if let bus = selectedBus {
-                    VStack {
+                if let busDestination = selectedBus?.destination.address {
+                    VStack(alignment: .leading) {
                         Text("Selected Bus:")
-                        Text("\(bus.origin.address) to \(bus.destination.address)")
+                        Text("Road to \(busDestination)")
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
                     }
                 }
                 Spacer()
