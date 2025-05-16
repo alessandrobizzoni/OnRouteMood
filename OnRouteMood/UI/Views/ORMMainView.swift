@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Polyline
 
 struct ORMMainView: View {
     
@@ -14,29 +13,35 @@ struct ORMMainView: View {
     
     @State var selectedBus: DomainTrips? = nil
     
-    @State private var routeCoordinates: [CLLocationCoordinate2D] = []
+    @State private var isShowingForm = false
     
-    @State private var cameraPosition = MapCameraPosition.region(
-        MKCoordinateRegion(
-            center: CLLocationCoordinate2D(latitude: 41.38, longitude: 2.18),
-            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
-        )
-    )
+    @State private var showBugList = false
     
     var body: some View {
         VStack {
-            Text("OnRouteMood")
-                .font(.title2)
-                .fontWeight(.bold)
-            
-            if let bus = selectedBus {
-                VStack {
-                    Text("Selected Bus:")
-                    Text("\(bus.origin.address) to \(bus.destination.address)")
-                }
+            HStack {
+                Text("OnRouteMood")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                
+                Spacer()
+                
+                formButtonView
             }
+            .padding(.horizontal)
             
-            mapView
+            HStack {
+                if let bus = selectedBus {
+                    VStack {
+                        Text("Selected Bus:")
+                        Text("\(bus.origin.address) to \(bus.destination.address)")
+                    }
+                }
+                Spacer()
+            }
+            .padding(.horizontal)
+            
+            ORMMapView(selectedBus: $selectedBus)
                 .padding()
             
             listTripView
@@ -46,26 +51,51 @@ struct ORMMainView: View {
         .navigationTitle("OnRouteMood")
         .onAppear {
             viewModel.getTrips()
+            viewModel.loadReports()
+        }
+        .sheet(isPresented: $isShowingForm) {
+            sheetView
         }
     }
 }
 
-import MapKit
-
 private extension ORMMainView {
+    
+    var formButtonView: some View {
+        ZStack(alignment: .topTrailing) {
+            Button(action: {
+                isShowingForm = true
+            }) {
+                Image(systemName: "doc.text.fill")
+                    .font(.system(size: 16))
+                    .padding()
+                    .background(Color.white)
+                    .clipShape(Circle())
+                    .shadow(radius: 3)
+            }
+            
+            if savedFormsCount > 0 {
+                Text("\(savedFormsCount)")
+                    .font(.caption)
+                    .foregroundColor(.white)
+                    .padding(6)
+                    .background(Color.red)
+                    .clipShape(Circle())
+                    .offset(x: 4, y: -8)
+            }
+        }
+    }
     
     var listTripView: some View {
         ScrollView(showsIndicators: false) {
-            ForEach(viewModel.allTrips, id: \.id) { trip in
+            ForEach(viewModel.sortedTrips, id: \.id) { trip in
                 Button {
                     selectedBus = trip
-                    
-                    if let coords = decodePolyline(trip.route) {
-                        routeCoordinates = coords
-                        centerMapToFitRoute(coords)
-                    }
                 } label: {
-                    ORMTripCard(trip: trip)
+                    ORMTripCard(
+                        trip: trip,
+                        isSelected: trip.id == selectedBus?.id
+                    )
                 }
             }
             
@@ -80,68 +110,45 @@ private extension ORMMainView {
         }
     }
     
-    var mapView: some View {
-        Map(position: $cameraPosition) {
-            
-            if let origin = selectedBus?.origin.point,
-               let destination = selectedBus?.destination.point,
-               let lat1 = origin.lat, let lon1 = origin.long,
-               let lat2 = destination.lat, let lon2 = destination.long {
-                
-                Marker("Origen", coordinate: CLLocationCoordinate2D(latitude: lat1, longitude: lon1))
-                Marker("Destino", coordinate: CLLocationCoordinate2D(latitude: lat2, longitude: lon2))
+    var sheetView: some View {
+        VStack {
+            ZStack {
+                if showBugList {
+                    ORMSubmittedFormsView(
+                        viewModel: viewModel,
+                        showBugList: $showBugList
+                    )
+                    .transition(
+                        .opacity.combined(
+                            with: .move(
+                                edge: .leading
+                            )
+                        )
+                    )
+                } else {
+                    ORMFormView(
+                        isShowingForm: $isShowingForm,
+                        showBugList: $showBugList,
+                        viewModel: viewModel
+                    )
+                    .transition(
+                        .opacity.combined(
+                            with: .move(
+                                edge: .leading
+                            )
+                        )
+                    )
+                }
             }
-            
-            // Añadir la polilínea si hay coordenadas
-            if !routeCoordinates.isEmpty {
-                MapPolyline(coordinates: routeCoordinates)
-                    .stroke(Color.blue, lineWidth: 4)
-            }
-            
+            .animation(.bouncy, value: showBugList)
         }
-        .cornerRadius(20)
-        .frame(height: 425)
-        .overlay(
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(Color.black, lineWidth: 1)
-        )
-        .shadow(radius: 5)
     }
 }
 
 private extension ORMMainView {
     
-    func centerMapToFitRoute(_ coordinates: [CLLocationCoordinate2D]) {
-        guard !coordinates.isEmpty else { return }
-        
-        let lats = coordinates.map { $0.latitude }
-        let longs = coordinates.map { $0.longitude }
-        
-        let minLat = lats.min() ?? 0
-        let maxLat = lats.max() ?? 0
-        let minLong = longs.min() ?? 0
-        let maxLong = longs.max() ?? 0
-        
-        let center = CLLocationCoordinate2D(
-            latitude: (minLat + maxLat) / 2,
-            longitude: (minLong + maxLong) / 2
-        )
-        
-        let span = MKCoordinateSpan(
-            latitudeDelta: (maxLat - minLat) * 1.5,
-            longitudeDelta: (maxLong - minLong) * 1.5
-        )
-        
-        withAnimation {
-            cameraPosition = .region(
-                MKCoordinateRegion(center: center, span: span)
-            )
-        }
-    }
-    
-    func decodePolyline(_ encodedPolyline: String) -> [CLLocationCoordinate2D]? {
-        let polyline = Polyline(encodedPolyline: encodedPolyline)
-            return polyline.coordinates
+    var savedFormsCount: Int {
+        return viewModel.completedForms.count
     }
 }
 

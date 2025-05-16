@@ -11,24 +11,69 @@ struct ORMTripCard: View {
     
     let trip: DomainTrips
     
+    let isSelected: Bool
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack(alignment: .center) {
-                Text("\(trip.origin.address)")
+            HStack {
+                VStack(alignment: .leading) {
+                    Text("From:")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Text(trip.origin.address)
+                        .font(.subheadline)
+                        .lineLimit(1)
+                }
                 Spacer()
                 Image(systemName: "arrow.right")
+                    .foregroundColor(.blue)
                 Spacer()
-                Text("\(trip.destination.address)")
+                VStack(alignment: .leading) {
+                    Text("To:")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Text(trip.destination.address)
+                        .font(.subheadline)
+                        .lineLimit(1)
+                }
             }
-            Text("Salida: ")
+            
+            Text("Start at: \(formatted(date: trip.startTime))")
                 .font(.footnote)
                 .foregroundColor(.secondary)
+            
+            HStack {
+                Text("Driver: \(trip.driverName)")
+                    .font(.footnote)
+                    .foregroundColor(.secondary)
+                
+                Spacer()
+                
+                Text("Status: \(trip.status.rawValue.uppercased())")
+                    .font(.footnote)
+                    .foregroundColor(trip.status == .ongoing ? .black : .red)
+            }
+            
         }
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(Color(.systemBackground))
+                .stroke(isSelected ? Color.black : Color.clear, lineWidth: 2)
+                .fill(Color(trip.status.cardColor))
                 .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
         )
+    }
+    
+    private func formatted(date: String) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        
+        if let date = formatter.date(from: date) {
+            formatter.dateFormat = "HH:mm"
+            return formatter.string(from: date)
+        } else {
+            return date
+        }
     }
 }

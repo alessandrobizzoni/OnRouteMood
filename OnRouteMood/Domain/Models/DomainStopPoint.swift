@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DomainStopPoint: Decodable {
+struct DomainStopPoint: Decodable, Equatable {
     let id: Int?
     let point: DomainCoordinate?
 }
