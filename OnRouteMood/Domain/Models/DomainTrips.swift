@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DomainTrips: Identifiable, Decodable, Equatable {
+struct DomainTrips: Identifiable, Codable, Equatable {
     let id: UUID
     let driverName: String
     let status: TripStatus

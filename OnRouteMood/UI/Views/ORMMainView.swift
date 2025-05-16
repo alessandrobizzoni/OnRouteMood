@@ -17,6 +17,10 @@ struct ORMMainView: View {
     
     @State private var showBugList = false
     
+    @State var selectedStop: DomainStopPoint?
+    
+    @State var isShowingStopInfo: Bool = false
+    
     var body: some View {
         VStack {
             HStack {
@@ -41,8 +45,12 @@ struct ORMMainView: View {
             }
             .padding(.horizontal)
             
-            ORMMapView(selectedBus: $selectedBus)
-                .padding()
+            ZStack {
+                ORMMapView(selectedBus: $selectedBus, selectedStop: $selectedStop, isShowingStopInfo: $isShowingStopInfo)
+                    .padding()
+                
+                stopInfo
+            }
             
             listTripView
         }
@@ -141,6 +149,31 @@ private extension ORMMainView {
                 }
             }
             .animation(.bouncy, value: showBugList)
+        }
+    }
+    
+    @ViewBuilder var stopInfo: some View {
+        if let stop = selectedStop, isShowingStopInfo {
+            VStack {
+                Spacer()
+                VStack(alignment: .leading) {
+                    Text("Parada \(stop.id ?? 0)")
+                        .font(.headline)
+                    Text("Lat: \(stop.point?._latitude ?? 0), Lon: \(stop.point?._longitude ?? 0)")
+                        .font(.subheadline)
+                    Button("Cerrar") {
+                        isShowingStopInfo = false
+                    }
+                    .padding(.top)
+                }
+                .padding()
+                .background(.ultraThinMaterial)
+                .cornerRadius(12)
+                .shadow(radius: 5)
+                .padding()
+            }
+            .transition(.move(edge: .bottom))
+            .animation(.default, value: isShowingStopInfo)
         }
     }
 }

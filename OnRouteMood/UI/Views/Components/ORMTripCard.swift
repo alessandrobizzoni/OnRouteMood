@@ -20,7 +20,7 @@ struct ORMTripCard: View {
                     Text("From:")
                         .font(.caption)
                         .foregroundColor(.secondary)
-                    Text(trip.origin.address)
+                    Text(trip.origin.address ?? "")
                         .font(.subheadline)
                         .lineLimit(1)
                 }
@@ -32,13 +32,13 @@ struct ORMTripCard: View {
                     Text("To:")
                         .font(.caption)
                         .foregroundColor(.secondary)
-                    Text(trip.destination.address)
+                    Text(trip.destination.address ?? "")
                         .font(.subheadline)
                         .lineLimit(1)
                 }
             }
             
-            Text("Start at: \(formatted(date: trip.startTime))")
+            Text("Start at: \(formattedTime(trip.startTime))")
                 .font(.footnote)
                 .foregroundColor(.secondary)
             
@@ -64,7 +64,7 @@ struct ORMTripCard: View {
         )
     }
     
-    private func formatted(date: String) -> String {
+    private func formattedTime(_ date: String) -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DomainCoordinate: Decodable, Equatable {
-    let lat: Double?
-    let long: Double?
+struct DomainCoordinate: Codable, Equatable {
+    let _latitude: Double?
+    let _longitude: Double?
 }

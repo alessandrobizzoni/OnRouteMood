@@ -7,13 +7,13 @@
 
 import Foundation
 
-struct DataStop: Identifiable, Decodable {
+struct DataStop: Decodable, Equatable, Encodable, Identifiable {
     var id = UUID()
-    let stopTime: String
-    let paid: Bool
+    let price: Double
     let address: String
     let tripId: Int
-    let userName: String
+    let paid: Bool
+    let stopTime: String
     let point: DataCoordinate
-    let price: Double
+    let userName: String
 }

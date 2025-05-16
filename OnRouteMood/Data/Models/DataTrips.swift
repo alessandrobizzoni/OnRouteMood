@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DataTrips: Codable, Identifiable {
+struct DataTrips: Decodable, Equatable, Encodable, Identifiable {
     var id = UUID()
     let driverName: String
     let status: String
@@ -28,7 +28,7 @@ struct DataTrips: Codable, Identifiable {
         origin = try container.decode(DataLocation.self, forKey: .origin)
         description = try container.decode(String.self, forKey: .description)
         destination = try container.decode(DataLocation.self, forKey: .destination)
-        stops = try container.decodeIfPresent([DataStopPoint].self, forKey: .stops) ?? []
+        stops = try container.decodeIfPresent([DataStopPoint?].self, forKey: .stops) ?? []
         endTime = try container.decode(String.self, forKey: .endTime)
     }
 }

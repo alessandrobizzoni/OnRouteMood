@@ -7,18 +7,18 @@
 
 import Foundation
 
-struct DataStopPoint: Codable {
-    let stopId: Int?
-    let stopPoint: DataCoordinate?
+struct DataStopPoint: Decodable, Equatable, Encodable {
+    let id: Int?
+    let point: DataCoordinate?
     
     enum CodingKeys: String, CodingKey {
-        case stopId = "id"
-        case stopPoint = "point"
+        case id
+        case point
     }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        stopId = try container.decodeIfPresent(Int.self, forKey: .stopId)
-        stopPoint = try container.decodeIfPresent(DataCoordinate.self, forKey: .stopPoint)
+        id = try container.decodeIfPresent(Int.self, forKey: .id)
+        point = try container.decodeIfPresent(DataCoordinate.self, forKey: .point)
     }
 }

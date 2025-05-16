@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DomainLocation: Decodable, Equatable {
-    let address: String
-    let point: DomainCoordinate
+struct DomainLocation: Codable, Equatable {
+    let address: String?
+    let point: DomainCoordinate?
 }

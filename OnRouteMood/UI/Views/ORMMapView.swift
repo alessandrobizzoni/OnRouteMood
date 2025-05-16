@@ -13,6 +13,10 @@ struct ORMMapView: View {
     
     @Binding var selectedBus: DomainTrips?
     
+    @Binding var selectedStop: DomainStopPoint?
+    
+    @Binding var isShowingStopInfo: Bool
+    
     @State private var cameraPosition = MapCameraPosition.region(
         MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: 41.38, longitude: 2.18),
@@ -27,16 +31,51 @@ struct ORMMapView: View {
             
             if let origin = selectedBus?.origin.point,
                let destination = selectedBus?.destination.point,
-               let lat1 = origin.lat, let lon1 = origin.long,
-               let lat2 = destination.lat, let lon2 = destination.long {
-                
-                Marker("Origen", coordinate: CLLocationCoordinate2D(latitude: lat1, longitude: lon1))
-                Marker("Destino", coordinate: CLLocationCoordinate2D(latitude: lat2, longitude: lon2))
+               let lat1 = origin._latitude, let lon1 = origin._longitude,
+               let lat2 = destination._latitude, let lon2 = destination._longitude {
+                Annotation("Origin", coordinate: CLLocationCoordinate2D(latitude: lat1, longitude: lon1)) {
+                    ZStack {
+                        Circle()
+                            .foregroundStyle(.yellow.opacity(0.5))
+                            .frame(width: 20, height: 20)
+                        
+                        Image(systemName: "bus.fill")
+                            .symbolEffect(.variableColor)
+                            .padding(8)
+                            .foregroundStyle(.black)
+                            .background(Color.yellow)
+                            .clipShape(Circle())
+                    }
+                }
+
+                Marker("To", systemImage: "flag.fill", coordinate: CLLocationCoordinate2D(latitude: lat2, longitude: lon2))
+            }
+            
+            if let stops = selectedBus?.stops {
+                ForEach(Array(stops.enumerated()), id: \.offset) { index, stop in
+                    if let lat = stop?.point?._latitude, let lon = stop?.point?._longitude {
+                        Annotation(
+                            "Stop \(index + 1)",
+                            coordinate: CLLocationCoordinate2D(
+                                latitude: lat,
+                                longitude: lon
+                            )
+                        ) {
+                            Label("", systemImage: "mappin.circle.fill")
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(.white, .blue)
+                                .onTapGesture {
+                                    selectedStop = stop
+                                    isShowingStopInfo = true
+                                }
+                        }
+                    }
+                }
             }
             
             if !routeCoordinates.isEmpty {
                 MapPolyline(coordinates: routeCoordinates)
-                    .stroke(Color.blue, lineWidth: 4)
+                    .stroke(Color.yellow, lineWidth: 4)
             }
             
         }
@@ -90,6 +129,6 @@ private extension ORMMapView {
     
     func decodePolyline(_ encodedPolyline: String) -> [CLLocationCoordinate2D]? {
         let polyline = Polyline(encodedPolyline: encodedPolyline)
-            return polyline.coordinates
+        return polyline.coordinates
     }
 }
