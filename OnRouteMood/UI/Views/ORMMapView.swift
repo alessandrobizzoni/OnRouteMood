@@ -80,7 +80,7 @@ struct ORMMapView: View {
             
         }
         .cornerRadius(20)
-        .frame(height: 425)
+        .frame(height: UIScreen.main.bounds.height > 700 ? 425 : 320 )
         .overlay(
             RoundedRectangle(cornerRadius: 20)
                 .stroke(Color.black, lineWidth: 1)
