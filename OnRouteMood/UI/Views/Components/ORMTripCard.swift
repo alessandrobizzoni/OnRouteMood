@@ -70,7 +70,7 @@ private extension ORMTripCard {
     var tripsStatusColor: Color {
         switch trip.status {
         case .ongoing:
-            return .black
+            return .reversePrimaryORM
         case .scheduled:
             return .orange
         case .cancelled, .finalized:
