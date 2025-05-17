@@ -256,23 +256,18 @@ class NetworkMock: NetworkProtocol {
     ]
     
     """
-    
-    let mockStopResponse = """
-{
-    "price": 1.5,
-    "address": "Ramblas, Barcelona",
-    "tripId": 1,
-    "paid": true,
-    "stopTime": "2018-12-18T08:10:00.000Z",
-    "point": {
-        "_latitude": 41.37653,
-        "_longitude": 2.17924
-    },
-    "userName": "Manuel Gomez"
-}
-"""
-    
-    var shouldFailWithError = false
+    let mock: DataStop = .init(
+        price: 1.5,
+        address: "Ramblas, Barcelona",
+        tripId: 1,
+        paid: true,
+        stopTime: "2018-12-18T08:10:00.000Z",
+        point: .init(
+            _latitude: 41.37653,
+            _longitude: 2.17924
+        ),
+        userName: "Manuel Gomez"
+    )
     
     func getTrips() -> AnyPublisher<[DataTrips], Error> {
         guard let jsonData = mockTripsResponse.data(using: .utf8) else {
@@ -293,20 +288,8 @@ class NetworkMock: NetworkProtocol {
     }
     
     func getStops() -> AnyPublisher<DataStop, Error> {
-        guard let jsonData = mockStopResponse.data(using: .utf8) else {
-            return Fail(error: NSError(domain: "TestErrorDomain", code: 100, userInfo: [NSLocalizedDescriptionKey: "No se pudo convertir el JSON a Data"]))
-                .eraseToAnyPublisher()
-        }
-        
-        do {
-            let stops = try JSONDecoder().decode(DataStop.self, from: jsonData)
-            
-            return Just(stops)
-                .setFailureType(to: Error.self)
-                .eraseToAnyPublisher()
-            
-        } catch {
-            return Fail(error: error).eraseToAnyPublisher()
-        }
+        return Just(mock)
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher()
     }
 }

@@ -11,7 +11,13 @@ import SwiftUI
 struct OnRouteMoodApp: App {
     var body: some Scene {
         WindowGroup {
-            ORMMainView(viewModel: ORMMainViewModel(ormInteractor: .init(networkManager: Network())))
+            ORMMainView(
+                viewModel: ORMMainViewModel(
+                    ormInteractor: ORMInteractor(
+                        networkManager: Network()
+                    )
+                )
+            )
         }
     }
 }

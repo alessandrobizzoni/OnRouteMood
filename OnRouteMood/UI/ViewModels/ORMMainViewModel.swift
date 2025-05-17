@@ -12,18 +12,26 @@ import CoreLocation
 
 class ORMMainViewModel: ObservableObject {
     
-    private var ormInteractor: ORMInteractor
+    private var ormInteractor: ORMInteractorProtocol
     
     private var cancellable: Set<AnyCancellable> = Set<AnyCancellable>()
     
     @Published var allTrips: [DomainTrips] = []
     
+    @Published var stopInfo: DomainStop?
+    
     @Published var beError: Bool = false
     
     @Published var completedForms: [ORMBugReport] = []
     
-    init(ormInteractor: ORMInteractor) {
+    init(ormInteractor: ORMInteractorProtocol) {
         self.ormInteractor = ormInteractor
+    }
+    
+    func onAppear() {
+        getTrips()
+        getStop()
+        loadReports()
     }
     
     var sortedTrips: [DomainTrips] {
@@ -55,6 +63,23 @@ class ORMMainViewModel: ObservableObject {
             }
             .store(in: &cancellable)
         
+    }
+    
+    func getStop() {
+        ormInteractor.getStops()
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    return
+                    
+                case .failure(let error):
+                    print("[DEBUG] " + error.localizedDescription)
+                }
+            } receiveValue: { [weak self] newValue in
+                self?.stopInfo = newValue
+            }
+            .store(in: &cancellable)
     }
     
     // MARK: - Local Storage

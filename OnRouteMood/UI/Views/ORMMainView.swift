@@ -23,6 +23,37 @@ struct ORMMainView: View {
     
     var body: some View {
         VStack {
+            
+            headerView
+            
+            ZStack {
+                ORMMapView(
+                    selectedBus: $selectedBus,
+                    selectedStop: $selectedStop,
+                    isShowingStopInfo: $isShowingStopInfo
+                )
+                .padding()
+                
+                stopInfo
+            }
+            
+            listTripView
+        }
+        .padding()
+        .background(Color.primaryORM)
+        .onAppear {
+            viewModel.onAppear()
+        }
+        .sheet(isPresented: $isShowingForm) {
+            sheetView
+        }
+    }
+}
+
+private extension ORMMainView {
+    
+    var headerView: some View {
+        Group {
             HStack {
                 Text("OnRouteMood")
                     .font(.title2)
@@ -46,30 +77,8 @@ struct ORMMainView: View {
                 Spacer()
             }
             .padding(.horizontal)
-            
-            ZStack {
-                ORMMapView(selectedBus: $selectedBus, selectedStop: $selectedStop, isShowingStopInfo: $isShowingStopInfo)
-                    .padding()
-                
-                stopInfo
-            }
-            
-            listTripView
-        }
-        .padding()
-        .background(Color.primaryORM)
-        .navigationTitle("OnRouteMood")
-        .onAppear {
-            viewModel.getTrips()
-            viewModel.loadReports()
-        }
-        .sheet(isPresented: $isShowingForm) {
-            sheetView
         }
     }
-}
-
-private extension ORMMainView {
     
     var formButtonView: some View {
         ZStack(alignment: .topTrailing) {
@@ -110,7 +119,7 @@ private extension ORMMainView {
             }
             
             if viewModel.beError {
-                Text("BE ERROR")
+                Text("SERVICE ERROR")
                 Button {
                     viewModel.getTrips()
                 } label: {
@@ -156,27 +165,27 @@ private extension ORMMainView {
     }
     
     @ViewBuilder var stopInfo: some View {
-        if let stop = selectedStop, isShowingStopInfo {
+        if let stopInfo = viewModel.stopInfo, let stop = selectedStop, isShowingStopInfo {
             VStack {
-                Spacer()
-                VStack(alignment: .leading) {
-                    Text("Parada \(stop.id ?? 0)")
-                        .font(.headline)
-                    Text("Lat: \(stop.point?._latitude ?? 0), Lon: \(stop.point?._longitude ?? 0)")
+                Text("Stop \(stop.id ?? 0)")
+                    .font(.headline)
+                HStack {
+                    Text("Price: \(String(format: "%.2f", stopInfo.price))€")
                         .font(.subheadline)
-                    Button("Cerrar") {
-                        isShowingStopInfo = false
-                    }
-                    .padding(.top)
+                    
+                    Text("Stop Time: \(formattedTime(stopInfo.stopTime))")
+                        .font(.subheadline)
                 }
-                .padding()
-                .background(.ultraThinMaterial)
-                .cornerRadius(12)
-                .shadow(radius: 5)
-                .padding()
+                Button("Cerrar") {
+                    isShowingStopInfo = false
+                }
             }
+            .padding()
+            .background(.ultraThinMaterial)
+            .cornerRadius(12)
+            .shadow(radius: 5)
             .transition(.move(edge: .bottom))
-            .animation(.default, value: isShowingStopInfo)
+            .animation(.easeInOut, value: isShowingStopInfo)
         }
     }
 }
@@ -186,8 +195,21 @@ private extension ORMMainView {
     var savedFormsCount: Int {
         return viewModel.completedForms.count
     }
+    
+    func formattedTime(_ date: String) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        
+        if let date = formatter.date(from: date) {
+            formatter.dateFormat = "HH:mm"
+            return formatter.string(from: date)
+        } else {
+            return date
+        }
+    }
 }
 
 #Preview {
-    ORMMainView(viewModel: ORMMainViewModel(ormInteractor: .init(networkManager: Network())))
+    ORMMainView(viewModel: ORMMainViewModel(ormInteractor: ORMInteractor(networkManager: Network())))
 }

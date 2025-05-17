@@ -29,15 +29,20 @@ struct ORMSubmittedFormsView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("\(form.firstName) \(form.surname)")
                             .font(.headline)
+                        
                         Text("Email: \(form.email)")
                             .font(.subheadline)
+                        
                         if !form.phone.isEmpty {
                             Text("Phone: \(form.phone)")
                         }
+                        
                         Text("Date & Time: \(form.date.formatted(date: .abbreviated, time: .shortened))")
                             .font(.footnote)
                             .foregroundColor(.gray)
+                        
                         Divider()
+                        
                         Text(form.description)
                             .font(.body)
                     }

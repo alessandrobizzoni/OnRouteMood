@@ -7,13 +7,12 @@
 
 import Foundation
 
-struct DomainStop: Codable, Identifiable, Equatable {
-    var id = UUID()
-    let stopTime: String
-    let paid: Bool
+struct DomainStop: Codable, Equatable {
+    let price: Double
     let address: String
     let tripId: Int
-    let userName: String
+    let paid: Bool
+    let stopTime: String
     let point: DomainCoordinate
-    let price: Double
+    let userName: String
 }

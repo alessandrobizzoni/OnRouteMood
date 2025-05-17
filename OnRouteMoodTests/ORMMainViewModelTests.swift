@@ -1,27 +1,30 @@
 //
-//  OnRouteMoodTests.swift
-//  OnRouteMoodTests
+//  ORMMainViewModelTests.swift
+//  OnRouteMood
 //
-//  Created by Alessandro Bizzoni on 14/5/25.
+//  Created by Alessandro Bizzoni on 17/5/25.
 //
 
 import XCTest
 import Combine
 @testable import OnRouteMood
 
-class ORMInteractorTests: XCTestCase {
+class ORMMainViewModelTests: XCTestCase {
     
-    var interactor: ORMInteractor!
+    var viewModel: ORMMainViewModel!
+    var ormInteractor: ORMInteractorProtocol!
     var cancellables: Set<AnyCancellable>!
     
     override func setUp() {
         super.setUp()
-        interactor = ORMInteractor(networkManager: NetworkMock())
+        ormInteractor = ORMInteractorMock()
+        viewModel = ORMMainViewModel(ormInteractor: ormInteractor)
         cancellables = Set<AnyCancellable>()
     }
     
     override func tearDown() {
-        interactor = nil
+        viewModel = nil
+        ormInteractor = nil
         cancellables = nil
         super.tearDown()
     }
@@ -29,7 +32,9 @@ class ORMInteractorTests: XCTestCase {
     func testGetTrips() {
         let expectation = expectation(description: "Trips received")
         
-        interactor.getTrips()
+        viewModel.getTrips()
+        
+        ormInteractor.getTrips()
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
@@ -46,10 +51,12 @@ class ORMInteractorTests: XCTestCase {
         waitForExpectations(timeout: 5, handler: nil)
     }
     
-    func testGetStops() {
-        let expectation = expectation(description: "Stop received")
+    func testGetStop() {
+        let expectation = expectation(description: "Trips received")
         
-        interactor.getStops()
+        viewModel.getStop()
+        
+        ormInteractor.getStops()
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
