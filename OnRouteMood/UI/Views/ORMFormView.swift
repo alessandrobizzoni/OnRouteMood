@@ -33,12 +33,13 @@ struct ORMFormView: View {
         NavigationView {
             Form {
                 Section(header: Text("User information")) {
-                    validatedTextField("Name", text: $firstName, isValid: !firstName.isEmpty)
-                    validatedTextField("Surname", text: $surname, isValid: !surname.isEmpty)
-                    validatedTextField("Email", text: $email, isValid: isValidEmail(email))
+                    validatedTextField("*Name", text: $firstName, isValid: !firstName.isEmpty)
+                    validatedTextField("*Surname", text: $surname, isValid: !surname.isEmpty)
+                    validatedTextField("*Email", text: $email, isValid: isValidEmail(email))
                         .keyboardType(.emailAddress)
-                    TextField("Phone Number (optional)", text: $phone)
+                    TextField("Phone Number", text: $phone)
                         .keyboardType(.phonePad)
+                    
                 }
                 
                 Section(header: Text("Error details")) {
@@ -98,7 +99,6 @@ private extension ORMFormView {
                 RoundedRectangle(cornerRadius: 4)
                     .stroke(showValidationError && !isValid ? Color.red : Color.clear, lineWidth: 1)
             )
-            
     }
 }
 
