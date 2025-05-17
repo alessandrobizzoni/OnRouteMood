@@ -42,7 +42,17 @@ struct ORMFormView: View {
                 }
                 
                 Section(header: Text("Error details")) {
-                    DatePicker("Date & Time", selection: $date, displayedComponents: [.date, .hourAndMinute])
+                    DatePicker(
+                        "Date & Time",
+                        selection: $date,
+                        in: ...Date(),
+                        displayedComponents: [
+                            .date,
+                            .hourAndMinute
+                        ]
+                    )
+                    .tint(.reversePrimaryORM)
+                    
                     TextEditor(text: $description)
                         .frame(height: 100)
                         .overlay(
@@ -52,6 +62,7 @@ struct ORMFormView: View {
                                     lineWidth: 1
                                 )
                         )
+                    
                     Text("\(description.count)/200")
                         .font(.caption)
                         .foregroundColor(description.count > 200 ? .red : .gray)
