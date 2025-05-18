@@ -49,7 +49,12 @@ struct ORMSubmittedFormsView: View {
                     .padding()
                     .background(Color(.systemBackground))
                     .cornerRadius(12)
-                    .shadow(color: Color.black.opacity(0.2), radius: 3, x: 0, y: 2)
+                    .shadow(
+                        color: Color.black.opacity(0.2),
+                        radius: 3,
+                        x: 0,
+                        y: 2
+                    )
                 }
             }
             .padding()

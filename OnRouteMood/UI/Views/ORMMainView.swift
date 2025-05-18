@@ -115,6 +115,7 @@ private extension ORMMainView {
                         trip: trip,
                         isSelected: trip.id == selectedBus?.id
                     )
+                    .padding(.all, 5)
                 }
             }
             

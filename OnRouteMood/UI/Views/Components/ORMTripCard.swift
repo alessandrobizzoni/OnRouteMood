@@ -24,10 +24,14 @@ struct ORMTripCard: View {
                         .font(.subheadline)
                         .lineLimit(1)
                 }
+                
                 Spacer()
+                
                 Image(systemName: "arrow.right")
                     .foregroundColor(.blue)
+                
                 Spacer()
+                
                 VStack(alignment: .leading) {
                     Text("To:")
                         .font(.caption)
@@ -59,9 +63,17 @@ struct ORMTripCard: View {
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .stroke(isSelected ? Color.black : Color.clear, lineWidth: 2)
+                .stroke(
+                    isSelected ? Color.black : Color.clear,
+                    lineWidth: 4
+                )
                 .fill(Color(trip.status.cardColor))
-                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+                .shadow(
+                    color: .black.opacity(0.1),
+                    radius: 4,
+                    x: 0,
+                    y: 2
+                )
         )
     }
 }

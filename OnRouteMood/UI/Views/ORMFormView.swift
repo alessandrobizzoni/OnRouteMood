@@ -9,6 +9,10 @@ import SwiftUI
 
 struct ORMFormView: View {
     
+    let kDescriptionBoxHeight: CGFloat = 100
+    
+    let kDescriptionMaxCharacters: Int = 200
+    
     @Binding var isShowingForm: Bool
     
     @Binding var showBugList: Bool
@@ -33,10 +37,23 @@ struct ORMFormView: View {
         NavigationView {
             Form {
                 Section(header: Text("User information")) {
-                    validatedTextField("*Name", text: $firstName, isValid: !firstName.isEmpty)
-                    validatedTextField("*Surname", text: $surname, isValid: !surname.isEmpty)
-                    validatedTextField("*Email", text: $email, isValid: isValidEmail(email))
-                        .keyboardType(.emailAddress)
+                    validatedTextField(
+                        "*Name",
+                        text: $firstName,
+                        isValid: !firstName.isEmpty
+                    )
+                    validatedTextField(
+                        "*Surname",
+                        text: $surname,
+                        isValid: !surname.isEmpty
+                    )
+                    validatedTextField(
+                        "*Email",
+                        text: $email,
+                        isValid: isValidEmail(email)
+                    )
+                    .keyboardType(.emailAddress)
+                    
                     TextField("Phone Number", text: $phone)
                         .keyboardType(.phonePad)
                     
@@ -55,7 +72,7 @@ struct ORMFormView: View {
                     .tint(.reversePrimaryORM)
                     
                     TextEditor(text: $description)
-                        .frame(height: 100)
+                        .frame(height: kDescriptionBoxHeight)
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
                                 .stroke(
@@ -64,16 +81,18 @@ struct ORMFormView: View {
                                 )
                         )
                     
-                    Text("\(description.count)/200")
+                    Text("\(description.count)/\(kDescriptionMaxCharacters)")
                         .font(.caption)
-                        .foregroundColor(description.count > 200 ? .red : .gray)
+                        .foregroundColor(
+                            description.count > kDescriptionMaxCharacters ? .red : .gray
+                        )
                 }
                 
                 Section {
                     Button("Enviar") {
                         sendFormData()
                     }
-                    .disabled(description.count > 200)
+                    .disabled(description.count > kDescriptionMaxCharacters)
                     
                     if !viewModel.completedForms.isEmpty {
                         Button("Completed Reports") {
@@ -97,7 +116,10 @@ private extension ORMFormView {
         TextField(title, text: text)
             .overlay(
                 RoundedRectangle(cornerRadius: 4)
-                    .stroke(showValidationError && !isValid ? Color.red : Color.clear, lineWidth: 1)
+                    .stroke(
+                        showValidationError && !isValid ? Color.red : Color.clear,
+                        lineWidth: 1
+                    )
             )
     }
 }
@@ -108,7 +130,7 @@ private extension ORMFormView {
         !surname.isEmpty &&
         isValidEmail(email) &&
         !description.isEmpty &&
-        description.count <= 200
+        description.count <= kDescriptionMaxCharacters
     }
     
     func isValidEmail(_ email: String) -> Bool {

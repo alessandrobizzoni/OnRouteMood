@@ -11,6 +11,14 @@ import MapKit
 
 struct ORMMapView: View {
     
+    let kCommonCornerRadius: CGFloat = 20
+    
+    let kLargeHeightMap: CGFloat = 425
+    
+    let kShortHeightMap: CGFloat = 320
+    
+    let kLargeScreen: CGFloat = 700
+    
     @Binding var selectedBus: DomainTrips?
     
     @Binding var selectedStop: DomainStopPoint?
@@ -79,10 +87,12 @@ struct ORMMapView: View {
             }
             
         }
-        .cornerRadius(20)
-        .frame(height: UIScreen.main.bounds.height > 700 ? 425 : 320 )
+        .cornerRadius(kCommonCornerRadius)
+        .frame(
+            height: UIScreen.main.bounds.height > kLargeScreen ? kLargeHeightMap : kShortHeightMap
+        )
         .overlay(
-            RoundedRectangle(cornerRadius: 20)
+            RoundedRectangle(cornerRadius: kCommonCornerRadius)
                 .stroke(Color.black, lineWidth: 1)
         )
         .shadow(radius: 5)
